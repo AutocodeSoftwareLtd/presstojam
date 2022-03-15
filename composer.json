@@ -11,7 +11,7 @@
     "require": {
         "php": ">=7.3.0"
     },
-    "autload" : {
+    "autoload" : {
         "psr-4" : {
             "PressToJam" : "app/"
         }

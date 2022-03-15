@@ -1,5 +1,5 @@
 <?php
-namespace PresstoJam;
+namespace PressToJam;
 
 class Publish {
 

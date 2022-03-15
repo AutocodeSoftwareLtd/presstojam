@@ -1,6 +1,6 @@
 <?php
 
-namespace PresstoJam;
+namespace PressToJam;
 
 class Dictionary {
 
