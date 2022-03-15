@@ -1,0 +1,11 @@
+{
+    "name": "presstojam/apimanager",
+    "description": "SDK to manage common API functionality. Easily manage your own hosting",
+    "authors": [
+        {
+            "name": "Suzanne Clifford",
+            "email": "suzanne.clifford@presstojam.com"
+        }
+    ],
+    "require": {}
+}
