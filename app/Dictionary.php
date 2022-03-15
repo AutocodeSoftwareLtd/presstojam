@@ -7,9 +7,10 @@ class Dictionary {
     private $client;
     private $project_id;
 
-    function __construct($client, $project_id) {
+    function __construct($client, $project_id, $download_dir) {
         $this->client = $client;
         $this->project_id = $project_id;
+        $this->download_dir = trim($download_dir, "/");
     }
 
     function download($id) {
@@ -20,8 +21,8 @@ class Dictionary {
             if ($complete) {
                 $lang = $res['language'];
                 $data = $this->client->getRaw("/dictionary-templates-template", ["id"=>$id]);
-                echo "Writing to " . __DIR__ . "/tmp/dict_" . $lang . ".json";
-                file_put_contents(__DIR__ . "/tmp/dict_" . $lang . ".json", $data);
+                echo "Writing to " . $this->download_dir . "/dict_" . $lang . ".json";
+                file_put_contents($this->download_dir . "/dict_" . $lang . ".json", $data);
                 exit;
             }
             sleep(2);
@@ -37,7 +38,7 @@ class Dictionary {
     function updateLanguage($lang) {
         $ids = $this->client->get("/dictionary-templates", ["projects_id"=>$this->project_id, "language"=>$lang]);
         $id = $ids["__data"][0]["id"];
-        $blob = file_get_contents(__DIR__ . "/tmp/dict_" . $lang.  ".json");
+        $blob = file_get_contents($this->download_dir . "/dict_" . $lang.  ".json");
         $this->client->pushAsset("/dictionary-templates-template", ["id"=>$id], $blob);
         $this->client->put("/dictionary-templates", ["id"=>$id, "process"=> true]);
     }

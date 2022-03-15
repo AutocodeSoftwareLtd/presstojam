@@ -8,7 +8,7 @@ class DBManager {
     private $client;
 
     function __construct($client) {
-        $this->pdo = $pdo = \GC\Core\Factories\PDOFactory::createPDO();
+        $this->pdo = $pdo = \PressToJamCore\Configs\Factory::createPDO();
         $this->client = $client;
     }
 
