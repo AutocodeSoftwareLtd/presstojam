@@ -25,10 +25,10 @@ class Publish {
             $complete = ($res['process']) ? false : true;
             if ($complete) {
                 if ($this->download_dir) {
-                    $download = new \Download\Downloader($this->client, $this->project_id);
+                    $download = new Downloader($this->client, $this->project_id);
                     $download->download($this->download_dir);
                 }
-                exit;
+                break;
             }
             sleep(2);
         }

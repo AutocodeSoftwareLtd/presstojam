@@ -19,22 +19,17 @@ class UploadDirectory {
         $this->config = $config;
     }
 
-    function getRelativeFileName($file) {
-        $file = str_replace("\\", "/", $file);
-        $dir = str_replace("\\", "/", $this->config->dir);
-        return str_replace($dir, "", $file);
-    }
 
     function scanFileTree() {
         $tree=new \StdClass;
-        $it = new \RecursiveDirectoryIterator($this->config->dir, \FilesystemIterator::SKIP_DOTS);
-        foreach(new \RecursiveIteratorIterator($it) as $file) {
+        $files = \PressToJamCore\DirectoryManager::getRecursiveFiles($this->config->dir);
+        foreach($files as $file) {
             if ($file->getType() == "link" OR $file->getType() == "dir") continue;
             $details = new FileDetails();
             $details->file = $file->getRealPath();
             $details->atime = $file->getATime();
             $details->size = $file->getSize();
-            $uri = $this->getRelativeFilename($details->file);
+            $uri = \PressToJamCore\DirectoryManager::getRelativeFilename($details->file);
             $tree->$uri = $details;
         }
         return $tree;
