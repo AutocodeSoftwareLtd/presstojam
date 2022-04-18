@@ -8,7 +8,7 @@ class DBManager {
     private $client;
 
     function __construct($client) {
-        $this->pdo = $pdo = \PressToJamCore\Configs\Factory::createPDO();
+        $this->pdo = \PressToJamCore\Configs\Factory::createPDO();
         $this->client = $client;
     }
 
@@ -102,11 +102,11 @@ class DBManager {
     }
 
 
-    function sync($project_id) {
+    function sync($project_id, $explain = false) {
         $tables = $this->getTables();
         $json = json_encode($tables);
         $this->client->debug = true;
-        $res = $this->client->post("/sync-db-log", ["projects_id"=>$project_id, "dbdetails"=>["name"=>"dbdetails.json", "size"=>strlen($json)]]);
+        $res = $this->client->post("/sync-db-log", ["projects_id"=>$project_id, "dbdetails"=>["ext"=>"json", "size"=>strlen($json)]]);
         $id = $res['id'];
         $this->client->pushAsset("/sync-db-log-dbdetails", ["id"=>$id], $json);
         sleep(15);
@@ -117,16 +117,7 @@ class DBManager {
             if ($complete) {
                 $data = $this->client->getAsset("/sync-db-log-dbdetails", ["id"=>$id]);
                 $exp = explode("\n", $data);
-                foreach($exp as $sql) {
-                    try {
-                        echo "SQL is " . $sql;
-                       // $this->pdo->query(trim($sql));
-                    } catch (\Exception $e) {
-                        echo "\nCouldn't run SQL statement " . $sql;
-                        echo "    - " . $e->getMessage();
-                    }
-                }
-                return;
+                return $exp;
             }
             sleep(2);
         }

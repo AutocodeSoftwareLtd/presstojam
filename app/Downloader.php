@@ -18,7 +18,7 @@ class Downloader {
 
         $zip = new \ZipArchive();
         $zip->open($dir . "/src.zip");
-        $zip->extractTo($dir . "/gc");
+        $zip->extractTo($dir);
         $zip->close();
 
         unlink($dir . "/src.zip");
