@@ -106,7 +106,7 @@ class DBManager {
         $tables = $this->getTables();
         $json = json_encode($tables);
         $this->client->debug = true;
-        $res = $this->client->post("/sync-db-log", ["projects_id"=>$project_id, "dbdetails"=>["ext"=>"json", "size"=>strlen($json)]]);
+        $res = $this->client->post("/sync-db-log", ["projects-id"=>$project_id, "dbdetails"=>["ext"=>"json", "size"=>strlen($json)]]);
         $id = $res['id'];
         $this->client->pushAsset("/sync-db-log-dbdetails", ["id"=>$id], $json);
         sleep(15);
