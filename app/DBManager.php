@@ -70,5 +70,16 @@ class DBManager {
         $id = $res['__key'];
         $res = $this->client->pushAsset("/sync-db-log-dbdetails", ["id"=>$id], $json);
         var_dump($res);
+
+        sleep(20);
+        $complete=false;
+        while (!$complete) {
+            $res = $this->client->get("/sync-db-log", ["id"=>$id, "__fields"=>["id","complete"]]);
+            if ($res['complete']) {
+                echo "\nFinished";
+                exit;
+            }
+            sleep(2);
+        }
     }
 }
