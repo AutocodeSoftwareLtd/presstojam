@@ -13,8 +13,9 @@ class Downloader {
 
 
     function download($dir) {
-        $blob = $this->client->getRaw("/projects-src", ["id"=>$this->project_id]);
-        file_put_contents($dir . "/src.zip", $blob);
+        $blob = $this->client->get("/asset/projects/src/" . $this->project_id);
+     
+        file_put_contents($dir . "/src.zip", (string) $blob);
 
         $zip = new \ZipArchive();
         $zip->open($dir . "/src.zip");

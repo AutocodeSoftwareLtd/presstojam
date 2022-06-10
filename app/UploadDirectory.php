@@ -79,7 +79,7 @@ class UploadDirectory {
     function run() {
         $files = $this->scanFiles();
         $this->zipFiles($files);
-        $this->client->post("/custom-import-directory", ["blob"=> file_get_contents($this->config->zip_file)]);
+        $this->client->pushAsset("/custom-import-directory", file_get_contents($this->config->zip_file));
         unlink($this->config->zip_file);
     }
 }
