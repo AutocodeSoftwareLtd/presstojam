@@ -17,11 +17,11 @@ class Publish {
     }
 
     function publish() {
-        $response = $this->client->put("/data/accounts/projects", ["--id"=>$this->project_id, "process"=>true]);
+        $response = $this->client->put("/data/projects", ["--id"=>$this->project_id, "process"=>true]);
         sleep(20);
         $complete=false;
         while (!$complete) {
-            $res = $this->client->get("/data/accounts/projects/primary", ["--id"=>$this->project_id, "__fields"=>["--id","process"]]);
+            $res = $this->client->get("/data/projects/primary", ["--id"=>$this->project_id, "__fields"=>["--id","process"]]);
             $complete = ($res['process']) ? false : true;
             if ($complete) {
                 if ($this->download_dir) {

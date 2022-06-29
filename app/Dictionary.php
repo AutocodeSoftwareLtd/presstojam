@@ -42,7 +42,7 @@ class Dictionary {
         echo " ID is " . $id;
         $blob = file_get_contents($this->download_dir . "/dict_" . $lang.  ".json");
         $res = $this->client->pushAsset("/asset/dictionary-templates/template/" . $id, $blob);
-        var_dump($res);
+       
         $this->client->put("/data/accounts/dictionary-templates", ["--id"=>$id, "process"=> true]);
         echo "\nProcessing";
         $complete=false;
@@ -63,12 +63,8 @@ class Dictionary {
         $ids=$this->client->get("/data/accounts/dictionary-templates/parent", ["--parentid"=>$this->project_id, "language"=>$lang, "__limit"=>1]);
         $id = $ids["--id"];
         echo "\nGot id " . $id;
-        $this->client->pushAsset("/asset/dictionary-templates/template/" . $id, [], "");
-        echo "\nReset template";
-        $res = $this->client->put("/data/accounts/dictionary-templates", ["process"=>1, "--id"=>$id]);
-        echo "\nProcessing";
+        $this->client->put("/data/accounts/dictionary-templates", ["--id"=> $id, "process"=>true]);
         $this->download($id);
-        echo "\nReset";
     }
 
 

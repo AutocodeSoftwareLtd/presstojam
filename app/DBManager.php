@@ -65,7 +65,7 @@ class DBManager {
         if ($file) $tables = $this->importDumpFile($file);
         else $tables = $this->getTables();
         $json = json_encode($tables);
-        $res = $this->client->post("/data/accounts/sync-db-log", ["--parentid"=>$project_id, "complete"=>false, "dbdetails"=>["ext"=>"json", "size"=>strlen($json)]]);
+        $res = $this->client->post("/data/sync-db-log", ["--parentid"=>$project_id, "complete"=>false, "dbdetails"=>["ext"=>"json", "size"=>strlen($json)]]);
         var_dump($res);
         $id = $res['--id'];
         echo "ID is " . $id;
@@ -76,7 +76,7 @@ class DBManager {
         sleep(20);
         $complete=false;
         while (!$complete) {
-            $res = $this->client->get("/data/accounts/sync-db-log/primary", ["--id"=>$id, "__fields"=>["--id","complete"]]);
+            $res = $this->client->get("/data/sync-db-log/primary", ["--id"=>$id, "__fields"=>["--id","complete"]]);
             var_dump($res);
             if ($res['complete']) {
                 echo "\nFinished";
