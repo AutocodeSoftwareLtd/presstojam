@@ -17,7 +17,7 @@ class User {
 
 
     function login($username, $password) {
-        $res = $this->client->post("/data/accounts/login", [
+        $res = $this->client->post("/login/accounts", [
             "username"=>$username, 
             "password"=>$password
         ]);
