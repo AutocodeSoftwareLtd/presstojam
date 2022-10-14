@@ -1,6 +1,6 @@
 <?php
 
-namespace PressToJam;
+namespace GenerCodeDev;
 
 class Dictionary {
 
@@ -16,8 +16,7 @@ class Dictionary {
     function download($id) {
         $complete=false;
         while (!$complete) {
-            $res = $this->client->get("/data/accounts/dictionary-templates/primary", ["--id"=>$id]);
-            
+            $res = $this->client->get("/data/dictionary-templates/active", ["--id"=>$id]);
             $complete = ($res['process']) ? false : true;
             if ($complete) {
                 $lang = $res['language'];
@@ -32,22 +31,22 @@ class Dictionary {
 
 
     function createLanguage($lang) {
-        $res = $this->client->post("/data/accounts/dictionary-templates", ["--parentid"=>  $this->project_id, "language"=>$lang, "process"=>true]);
-        $this->download($res["id"]);
+        $res = $this->client->post("/data/dictionary-templates", ["--parent"=>  $this->project_id, "language"=>$lang, "process"=>true]);
+        $this->download($res["--id"]);
     }
 
     function updateLanguage($lang) {
-        $res = $this->client->get("/data/accounts/dictionary-templates/parent", ["--parentid"=>$this->project_id, "language"=>$lang, "__limit"=>1]);
-        $id = $res["--id"];
-        echo " ID is " . $id;
-        $blob = file_get_contents($this->download_dir . "/dict_" . $lang.  ".json");
-        $res = $this->client->pushAsset("/asset/dictionary-templates/template/" . $id, $blob);
+        $res = $this->client->get("/data/dictionary-templates/parent", ["--parent"=>$this->project_id, "language"=>$lang, "__limit"=>1]);
        
-        $this->client->put("/data/accounts/dictionary-templates", ["--id"=>$id, "process"=> true]);
-        echo "\nProcessing";
+        $id = $res["--id"];
+
+        $file = file_get_contents($this->download_dir . "/dict_" . $lang.  ".json");
+       
+        $res = $this->client->pushAsset("/asset/dictionary-templates/template/" . $id, $file);
+        $this->client->put("/data/dictionary-templates", ["--id"=>$id, "process"=> true]);
         $complete=false;
         while (!$complete) {
-            $res = $this->client->get("/data/accounts/dictionary-templates/primary", ["--id"=>$id]);
+            $res = $this->client->get("/data/dictionary-templates/active", ["--id"=>$id]);
             
             $complete = ($res['process']) ? false : true;
             if ($complete) {
@@ -60,16 +59,16 @@ class Dictionary {
 
 
     function resetLanguage($lang) {
-        $ids=$this->client->get("/data/accounts/dictionary-templates/parent", ["--parentid"=>$this->project_id, "language"=>$lang, "__limit"=>1]);
+        $ids=$this->client->get("/data/dictionary-templates/parent", ["--parent"=>$this->project_id, "language"=>$lang, "__limit"=>1]);
         $id = $ids["--id"];
         echo "\nGot id " . $id;
-        $this->client->put("/data/accounts/dictionary-templates", ["--id"=> $id, "process"=>true]);
+        $this->client->put("/data/dictionary-templates", ["--id"=> $id, "process"=>true]);
         $this->download($id);
     }
 
 
     function getLanguage($lang) {
-       $ids = $this->client->get("/data/accounts/dictionary-templates/parent", ["--parentid"=>$this->project_id, "language"=>$lang, "__limit"=>1]);
+       $ids = $this->client->get("/data/dictionary-templates/parent", ["--parent"=>$this->project_id, "language"=>$lang, "__limit"=>1]);
        $id = $ids["--id"];
        $this->download($id);
     }

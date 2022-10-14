@@ -1,5 +1,5 @@
 {
-    "name": "presstojam/apimanager",
+    "name": "presstojam/genercodedev",
     "description": "SDK to manage common API functionality. Easily manage your own hosting",
     "authors": [
         {
@@ -10,11 +10,12 @@
     "minimum-stability": "dev",
     "require": {
         "php": ">=7.3.0",
-        "presstojam/core" : ">=1.0"
+        "presstojam/core": "dev-main"
     },
+    "bin": ["bin/genercode"],
     "autoload" : {
         "psr-4" : {
-            "PressToJam\\" : "app/"
+            "GenerCodeDev\\" : "app/"
         }
     },
     "license" : "Apache-2.0"

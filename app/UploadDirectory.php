@@ -1,6 +1,6 @@
 <?php
 
-namespace PressToJam;
+namespace GenerCodeDev;
 
 class FileDetails {
     public $file;

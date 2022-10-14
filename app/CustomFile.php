@@ -1,5 +1,5 @@
 <?php
-namespace PressToJam;
+namespace GenerCodeDev;
 
 class CustomFile {
 

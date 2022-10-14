@@ -1,5 +1,5 @@
 <?php
-namespace PressToJam;
+namespace GenerCodeDev;
 
 class Publish {
 
@@ -21,7 +21,8 @@ class Publish {
         sleep(20);
         $complete=false;
         while (!$complete) {
-            $res = $this->client->get("/data/projects/primary", ["--id"=>$this->project_id, "__fields"=>["--id","process"]]);
+            $res = $this->client->get("/data/projects/active", ["--id"=>$this->project_id, "__fields"=>["--id","process"]]);
+            var_dump($res);
             $complete = ($res['process']) ? false : true;
             if ($complete) {
                 if ($this->download_dir) {

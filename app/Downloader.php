@@ -1,5 +1,5 @@
 <?php
-namespace PressToJam;
+namespace GenerCodeDev;
 
 class Downloader {
 
@@ -14,7 +14,7 @@ class Downloader {
 
     function download($dir) {
         $blob = $this->client->get("/asset/projects/src/" . $this->project_id);
-     
+       
         file_put_contents($dir . "/src.zip", (string) $blob);
 
         $zip = new \ZipArchive();

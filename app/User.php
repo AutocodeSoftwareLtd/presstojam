@@ -1,5 +1,5 @@
 <?php
-namespace PressToJam;
+namespace GenerCodeDev;
 
 class User {
 
@@ -11,14 +11,14 @@ class User {
 
 
     function getUser() {
-        $response = $this->client->get("/core/check-user");
-        return $response["user"];
+        $response = $this->client->get("/user/check-user");
+        return $response["name"];
     }
 
 
     function login($username, $password) {
-        $res = $this->client->post("/login/accounts", [
-            "username"=>$username, 
+        $res = $this->client->post("/user/login/accounts", [
+            "email"=>$username, 
             "password"=>$password
         ]);
         return $res;
