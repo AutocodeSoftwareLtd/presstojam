@@ -10,12 +10,13 @@
     "minimum-stability": "dev",
     "require": {
         "php": ">=7.3.0",
-        "presstojam/core": "dev-main"
+        "symfony/console": "6.2.x-dev",
+        "genercodeltd/genercodeclient": "dev-main"
     },
     "bin": ["bin/genercode"],
     "autoload" : {
         "psr-4" : {
-            "GenerCodeDev\\" : "app/"
+            "GenerCodeDev\\" : "src/"
         }
     },
     "license" : "Apache-2.0"
