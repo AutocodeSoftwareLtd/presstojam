@@ -11,8 +11,6 @@
     "require": {
         "php": ">=7.3.0",
         "symfony/console": ">=5.4.x-dev",
-        "genercodeltd/genercodeclient": "dev-main",
-        "genercodeltd/genercodeorm": "dev-main"
     },
     "bin": ["bin/genercode"],
     "autoload" : {
