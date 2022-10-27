@@ -42,7 +42,7 @@ class UploadCommand extends GenericCommand
 
             $filePath = $file->getRealPath();
             $relativePath = substr($filePath, strlen($this->download_dir) + 1);
-
+            $relativePath = str_replace("\\", "/", $relativePath);
 
             if (!$file->isDir()) {
                 $zip->addFile($filePath, $relativePath);

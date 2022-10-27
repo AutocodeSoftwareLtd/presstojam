@@ -27,11 +27,10 @@ class GenericCommand extends Command
     protected $download_dir;
     protected $app;
 
-    public function __construct(Container $app)
+    public function __construct($configs)
     {
         parent::__construct();
-        $this->app = $app;
-        $this->http = new \GenerCodeClient\HttpClient($app->config['api_url']);
+        $this->http = new \GenerCodeClient\HttpClient($configs['api_url']);
         //set token as session
     }
 
