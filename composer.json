@@ -10,7 +10,7 @@
     "minimum-stability": "dev",
     "require": {
         "php": ">=7.3.0",
-        "symfony/console": ">=5.4.x-dev",
+        "symfony/console": ">=5.4.x-dev"
     },
     "bin": ["bin/genercode"],
     "autoload" : {
