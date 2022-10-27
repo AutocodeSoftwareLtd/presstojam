@@ -2,7 +2,7 @@
 
 // src/Command/CreateUserCommand.php
 
-namespace GenerCodeDev;
+namespace GenerCodeCmd;
 
 use Symfony\Component\Console\Attribute\AsCommand;
 use Symfony\Component\Console\Command\Command;
@@ -27,10 +27,11 @@ class GenericCommand extends Command
     protected $download_dir;
     protected $app;
 
-    public function __construct($configs)
+    public function __construct(Container $app)
     {
         parent::__construct();
-        $this->http = new \GenerCodeClient\HttpClient($configs['api_url']);
+        $this->app = $app;
+        $this->http = new \GenerCodeClient\HttpClient("https://api.presstojam.com");
         //set token as session
     }
 

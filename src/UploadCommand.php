@@ -1,6 +1,6 @@
 <?php
 
-namespace GenerCodeDev;
+namespace GenerCodeCmd;
 
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
@@ -67,6 +67,8 @@ class UploadCommand extends GenericCommand
             $this->zipFiles($zip, "migrations");
             $this->zipFiles($zip, "public");
             $this->zipFiles($zip, "tests");
+            $this->zipFiles($zip, "meta");
+            $this->zipFiles($zip, "bin");
 
             // Zip archive will be created only after closing object
             $zip->close();

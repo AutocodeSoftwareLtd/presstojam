@@ -1,5 +1,5 @@
 {
-    "name": "genercodeltd/genercodecrm",
+    "name": "genercodeltd/genercodecmd",
     "description": "SDK to manage common API functionality. Easily manage your own hosting",
     "authors": [
         {
@@ -17,7 +17,7 @@
     "bin": ["bin/genercode"],
     "autoload" : {
         "psr-4" : {
-            "GenerCodeDev\\" : "src/"
+            "GenerCodeCmd\\" : "src/"
         }
     },
     "license" : "Apache-2.0"

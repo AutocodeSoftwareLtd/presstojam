@@ -2,7 +2,7 @@
 
 // src/Command/CreateUserCommand.php
 
-namespace GenerCodeDev;
+namespace GenerCodeCmd;
 
 
 use Symfony\Component\Console\Input\InputInterface;

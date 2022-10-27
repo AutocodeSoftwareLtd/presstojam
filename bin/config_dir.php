@@ -1,1 +1,0 @@
-<?php return "C:\Users\Admin\Documents\apimanager\bin/../../configs/sec.php";
