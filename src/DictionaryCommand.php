@@ -5,6 +5,9 @@ namespace GenerCodeCmd;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 
+use Symfony\Component\Console\Input\InputArgument;
+use Symfony\Component\Console\Input\InputOption;
+
 class DictionaryCommand extends GenericCommand
 {
     protected static $defaultDescription = 'Creates or downloads copy of the dictionary for a given language';
