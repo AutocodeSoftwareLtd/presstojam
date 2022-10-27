@@ -15,6 +15,8 @@ use Symfony\Component\Console\Question\ChoiceQuestion;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputOption;
 
+use \Illuminate\Container\Container;
+
 class GenericCommand extends Command
 {
     protected $project_id;
@@ -23,11 +25,13 @@ class GenericCommand extends Command
     private $username;
     private $password;
     protected $download_dir;
+    protected $app;
 
-    public function __construct($configs)
+    public function __construct(Container $app)
     {
         parent::__construct();
-        $this->http = new \GenerCodeClient\HttpClient($configs['api_url']);
+        $this->app = $app;
+        $this->http = new \GenerCodeClient\HttpClient($app->config['api_url']);
         //set token as session
     }
 

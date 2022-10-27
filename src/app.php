@@ -6,6 +6,8 @@ require __DIR__.'/../vendor/autoload.php';
 
 use Symfony\Component\Console\Application;
 
+use \GenerCodeOrm\Container;
+
 //need to create a generic container, need some laravel install
 $configs = ["api_url"=>"https://api.presstojam.com"];
 
