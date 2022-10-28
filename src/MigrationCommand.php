@@ -57,7 +57,7 @@ class MigrationCommand extends GenericCommand
 
     public function updateMigrationRanAt($pdo)
     {
-        $pdo->query("UPDATE " . $this->migration_table . " SET " . $this->migration_runat_table . " = now()");
+        $pdo->query("UPDATE " . $this->migration_table . " SET " . $this->migration_runat_col . " = now()");
     }
 
 
@@ -78,7 +78,7 @@ class MigrationCommand extends GenericCommand
         foreach ($files as $file) {
             $time = (int) str_replace(["Version", ".php"], "", basename($file));
             if ($time > $last_published) {
-                $migrations[] = "\Migrations\\" . str_replace(".php", "", basename($file));
+                $migrations[] = "\migrations\\" . str_replace(".php", "", basename($file));
             }
         }
         return $migrations;
@@ -87,12 +87,15 @@ class MigrationCommand extends GenericCommand
 
     public function runMigrations($pdo)
     {
+        $this->checkMigrationTable($pdo);
+        
         $last_published = $this->getLastPublished($pdo);
 
         $migrations = $this->getMigrationsFromLastRan($last_published);
         //run through the migrations directory
 
         foreach ($migrations as $file) {
+            include_once($this->download_dir . str_replace("\\", "/", $file) . ".php");
             $migration = new $file($this->app);
             $migration->up();
             $migration->run();

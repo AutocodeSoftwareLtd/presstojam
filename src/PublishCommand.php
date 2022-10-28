@@ -37,11 +37,7 @@ class PublishCommand extends GenericCommand
             $dispatch_id = $response['--dispatchid'];
             sleep(10);
             if ($this->processQueue($dispatch_id)) {
-                if ($this->download_dir) {
-                    $output->writeln('Downloading directory');
-                    $download = new Downloader($this->http, $this->project_id);
-                    $download->download($this->download_dir);
-                }
+                $output->writeln("Publish process succeeded");
             } else {
                 $output->writeln("Publish process failed - check for " . $dispatch_id);
             }
