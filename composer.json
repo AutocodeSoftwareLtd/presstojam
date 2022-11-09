@@ -10,7 +10,9 @@
     "minimum-stability": "dev",
     "require": {
         "php": ">=7.3.0",
-        "symfony/console": ">=5.4.14"
+        "symfony/console": ">=5.4.14",
+        "genercodeltd/genercodeclient": ">=v1.0.8",
+        "illuminate/config": "10.x-dev"
     },
     "bin": ["bin/genercode"],
     "autoload" : {

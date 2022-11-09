@@ -5,6 +5,8 @@ namespace GenerCodeCmd;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 
+
+#[AsCommand(name: 'gc:upload')]
 class UploadCommand extends GenericCommand
 {
     protected static $defaultDescription = 'Uploads the current directory to reset current files';

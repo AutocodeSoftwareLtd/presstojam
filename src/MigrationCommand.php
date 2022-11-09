@@ -8,6 +8,8 @@ use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputOption;
 
+
+#[AsCommand(name: 'gc:migration')]
 class MigrationCommand extends GenericCommand
 {
     protected static $defaultDescription = 'Run migrations for a given language';

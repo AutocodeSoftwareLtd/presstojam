@@ -5,6 +5,8 @@ namespace GenerCodeCmd;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 
+
+#[AsCommand(name: 'gc:download')]
 class DownloadCommand extends GenericCommand
 {
     protected static $defaultDescription = 'Downloads copy of API without repblushing';
