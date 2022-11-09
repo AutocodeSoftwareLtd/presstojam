@@ -10,7 +10,7 @@ use Symfony\Component\Console\Output\OutputInterface;
 class UploadCommand extends GenericCommand
 {
     protected static $defaultDescription = 'Uploads the current directory to reset current files';
-    protected static $defaultName = "upload";
+    protected static $defaultName = "gc:upload";
 
     public function configure(): void
     {

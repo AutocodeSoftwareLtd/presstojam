@@ -13,7 +13,7 @@ use Symfony\Component\Console\Input\InputOption;
 class MigrationCommand extends GenericCommand
 {
     protected static $defaultDescription = 'Run migrations for a given language';
-    protected static $defaultName = "migrate";
+    protected static $defaultName = "gc:migrate";
     protected $migration_table = "migrations";
     protected $migration_runat_col = "last_ran_at";
 

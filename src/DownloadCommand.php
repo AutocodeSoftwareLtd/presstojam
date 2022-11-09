@@ -10,7 +10,7 @@ use Symfony\Component\Console\Output\OutputInterface;
 class DownloadCommand extends GenericCommand
 {
     protected static $defaultDescription = 'Downloads copy of API without repblushing';
-    protected static $defaultName = "download";
+    protected static $defaultName = "gc:download";
 
     public function configure(): void
     {

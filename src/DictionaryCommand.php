@@ -13,7 +13,7 @@ use Symfony\Component\Console\Input\InputOption;
 class DictionaryCommand extends GenericCommand
 {
     protected static $defaultDescription = 'Creates or downloads copy of the dictionary for a given language';
-    protected static $defaultName = "dictionary";
+    protected static $defaultName = "gc:dictionary";
 
 
 

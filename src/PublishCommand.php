@@ -14,7 +14,7 @@ class PublishCommand extends GenericCommand
 {
     
     protected static $defaultDescription = 'Writes latest version of files required for the API';
-    protected static $defaultName = "publish";
+    protected static $defaultName = "gc:publish";
 
 
 
