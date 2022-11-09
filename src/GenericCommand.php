@@ -19,13 +19,13 @@ use \Illuminate\Container\Container;
 
 class GenericCommand extends Command
 {
-    protected $project_id;
-    protected $config;
+    protected $app;
     protected $http;
     private $username;
     private $password;
+    protected $project_id;
     protected $download_dir;
-    protected $app;
+    
 
     public function __construct(Container $app)
     {
@@ -33,17 +33,14 @@ class GenericCommand extends Command
         $this->app = $app;
         $this->http = new \GenerCodeClient\HttpClient("https://api.presstojam.com");
         //set token as session
+
+        $this->username = $this->app->config->get("cmd.username");
+        $this->password = $this->app->config->get("cmd.password");
+        $this->project_id = $this->app->config->get("cmd.project_id");
+        $this->download_dir = $this->app->config->get("cmd.download_dir");
     }
 
-    public function configure(): void
-    {
-        $this->addOption(
-            'env',
-            null,
-            InputOption::VALUE_REQUIRED
-        );
-    }
-
+   
     public function checkUser()
     {
         $res = $this->http->get("/user/check-user");
@@ -53,6 +50,22 @@ class GenericCommand extends Command
 
     public function login()
     {
+
+        $helper = $this->getHelper('question');
+
+        if (!$this->username) {              
+            $question = new Question('Please enter your username: ', '');
+            $this->username = $helper->ask($input, $output, $question);
+        }
+
+        if (!$this->password) {
+            $question = new Question('Please enter your password: ');
+            $question->setHidden(true);
+            $question->setHiddenFallback(false);
+            $this->password = $helper->ask($input, $output, $question);
+        }
+
+
         $res = $this->http->post("/user/login/accounts", [
             "email"=>$this->username,
             "password"=>$this->password
@@ -77,19 +90,13 @@ class GenericCommand extends Command
         }
 
         $env = $input->getOption("env");
-        if ($env) {
-            $configs = include($env);
-            $this->username = $configs['username'];
-            $this->password = $configs['password'];
-            $this->project_id = $configs['project_id'];
-            $this->download_dir = $configs['dir'];
 
-            if ($name == "public") {
-                $this->login();
-            }
-        } else {
+        if ($name == "public") {
+                
             $helper = $this->getHelper('question');
-            if ($name == "public") {
+
+            if (!$this->username) {
+                
                 $question = new Question('Please enter your username: ', '');
                 $this->username = $helper->ask($input, $output, $question);
 
