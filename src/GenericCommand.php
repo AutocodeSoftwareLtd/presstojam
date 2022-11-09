@@ -48,7 +48,7 @@ class GenericCommand extends Command
     }
 
 
-    public function login()
+    public function login(InputInterface $input, OutputInterface $output)
     {
 
         $helper = $this->getHelper('question');
@@ -89,31 +89,18 @@ class GenericCommand extends Command
             $name = "public";
         }
 
-        $env = $input->getOption("env");
 
         if ($name == "public") {
                 
-            $helper = $this->getHelper('question');
-
-            if (!$this->username) {
-                
-                $question = new Question('Please enter your username: ', '');
-                $this->username = $helper->ask($input, $output, $question);
-
-                $question = new Question('Please enter your password: ');
-                $question->setHidden(true);
-                $question->setHiddenFallback(false);
-
-                $this->password = $helper->ask($input, $output, $question);
-
-                $this->login();
-            }
+            $this->login($input, $output);
+            
         }
 
 
 
 
         if (!$this->project_id) {
+            $helper = $this->getHelper('question');
             $projects = $this->http->get("/data/projects", ["__fields"=>["--id", "domain"]]);
 
             $arr = [];
