@@ -31,7 +31,7 @@ class CdnManager extends GenericCommand
             if (!$fileinfo->isDot() AND !$fileinfo->isDir()) {
 
                 $real_path = $fileinfo->getRealPath();
-                $relative_path = substr($real_path, strlen($this->repo));
+                $relative_path = substr($real_path, strlen($this->download_dir . "/public"));
 
                 $new_path = ltrim($relative_path, "/");
 
@@ -65,8 +65,8 @@ class CdnManager extends GenericCommand
     {
         return $this->executeWrapper($input, $output, function ($input, $output) {
             
-            $invalidations = $this->uploadFiles($this->repo);
-            $invalidations = array_merge($invalidations, $this->uploadFiles($this->repo . "/dist"));
+            $invalidations = $this->uploadFiles($this->download_dir . "/public");
+            $invalidations = array_merge($invalidations, $this->uploadFiles($this->download_dir . "/public/dist"));
             $this->runInvalidations($invalidations);
         });    
     }
