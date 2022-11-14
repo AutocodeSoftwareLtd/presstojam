@@ -1,6 +1,6 @@
 <?php
 
-namespace Services\FileManager;
+namespace GenerCodeCmd;
 
 use GenerCodeOrm\GenerCodeContainer as Container;
 
