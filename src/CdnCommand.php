@@ -5,7 +5,7 @@ namespace Services\FileManager;
 use GenerCodeOrm\GenerCodeContainer as Container;
 
 #[AsCommand(name: 'gc:cdn')]
-class CdnManager extends GenericCommand
+class CdnCommand extends GenericCommand
 {
     protected static $defaultDescription = 'Pushes public files to cdn';
     protected static $defaultName = "gc:cdn";
