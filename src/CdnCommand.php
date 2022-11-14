@@ -65,7 +65,7 @@ class CdnCommand extends GenericCommand
     public function execute(InputInterface $input, OutputInterface $output)
     {
         return $this->executeWrapper($input, $output, function ($input, $output) {
-            
+            $this->app->config->set("filesystems.default", "cdn");
             $invalidations = $this->uploadFiles($this->download_dir . "/public");
             $invalidations = array_merge($invalidations, $this->uploadFiles($this->download_dir . "/public/dist"));
             $this->runInvalidations($invalidations);
