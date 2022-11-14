@@ -2,7 +2,8 @@
 
 namespace GenerCodeCmd;
 
-use GenerCodeOrm\GenerCodeContainer as Container;
+use Symfony\Component\Console\Input\InputInterface;
+use Symfony\Component\Console\Output\OutputInterface;
 
 #[AsCommand(name: 'gc:cdn')]
 class CdnCommand extends GenericCommand
