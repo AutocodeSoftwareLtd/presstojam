@@ -68,6 +68,7 @@ class CdnCommand extends GenericCommand
             $this->app->config->set("filesystems.default", "cdn");
             $invalidations = $this->uploadFiles($this->download_dir . "/public");
             $invalidations = array_merge($invalidations, $this->uploadFiles($this->download_dir . "/public/dist"));
+            $invalidations = array_merge($invalidations, $this->uploadFiles($this->download_dir . "/public/css"));
             $this->runInvalidations($invalidations);
         });    
     }
