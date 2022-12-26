@@ -32,23 +32,6 @@ class MigrationCommand extends GenericCommand
             ->addArgument('action', InputArgument::REQUIRED, 'Which action do you want to run?');
     }
 
-    public function getPDO()
-    {
-        $conn = $this->app->get(\Illuminate\Database\Connection::class);
-        return $conn->getPdo();
-    }
-
-
-    public function checkMigrationTable($pdo)
-    {
-        $res = $pdo->query("SHOW TABLES LIKE '%" . $this->migration_table . "%'");
-        $obj = $res->fetch();
-        if (!$obj) {
-            $pdo->query("CREATE TABLE " . $this->migration_table . " (" . $this->migration_runat_col . " timestamp not null default CURRENT_TIMESTAMP)");
-            $pdo->query("INSERT INTO " . $this->migration_table . " VALUES (0)");
-        }
-    }
-
 
     public function getLastPublished($pdo)
     {
@@ -57,98 +40,29 @@ class MigrationCommand extends GenericCommand
         return  $res[$this->migration_runat_col];
     }
 
-    public function updateMigrationRanAt($pdo)
+
+    public function runMigrations()
     {
-        $pdo->query("UPDATE " . $this->migration_table . " SET " . $this->migration_runat_col . " = now()");
+        $migrator = $this->app->get("migrator");
+        $migrator->run([$this->app->config->get("migration.repository")]);
+
     }
 
 
-    public function writeMigration($version, $contents)
-    {
-        file_put_contents($this->download_dir . "/migrations/" . $version . ".php");
-    }
-
-    public function getMigrationsFromLastRan($date)
-    {
-        //run through the migrations directory
-        $files = new \RecursiveDirectoryIterator(
-            $this->download_dir . "/migrations",
-            \RecursiveDirectoryIterator::SKIP_DOTS
-        );
-
-        $migrations = [];
-        foreach ($files as $file) {
-            $time = (int) str_replace(["Version", ".php"], "", basename($file));
-            if ($time > $last_published) {
-                $migrations[] = "\migrations\\" . str_replace(".php", "", basename($file));
-            }
-        }
-        return $migrations;
-    }
-
-
-    public function runMigrations($pdo)
-    {
-        $this->checkMigrationTable($pdo);
+    public function createTable() {
+        $sql = "CREATE TABLE `migrations` (
+            `id` int(11) NOT NULL AUTO_INCREMENT,
+            `migration` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
+            `batch` int(11) DEFAULT NULL,
+            PRIMARY KEY (`id`)
+          ) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci";
         
-        $last_published = $this->getLastPublished($pdo);
-
-        $migrations = $this->getMigrationsFromLastRan($last_published);
-        //run through the migrations directory
-
-        foreach ($migrations as $file) {
-            include_once($this->download_dir . str_replace("\\", "/", $file) . ".php");
-            $migration = new $file($this->app);
-            $migration->up();
-            $migration->run();
-        }
-
-        $this->updateMigrationRanAt($pdo);
+        $conn = $this->app["db"];
+        $db = $conn->statement($conn->raw($sql));
     }
 
 
-    public function createMigrationFile($class_name, $up = [], $down = [])
-    {
-        $str = "<?php\n\nclass " . $class_name . " extends \GenerCodeOrm\Migration {";
-        $str .= "\n\npublic function up() {";
-        foreach ($up as $sql) {
-            $str .= "\n\t\t\$this->addSQL(\"" . $sql . "\");";
-        }
-        $str .= "\n\n}";
-        $str .= "\n\n\tpublic function down() {";
-        foreach ($down as $sql) {
-            $str .= "\n\t\t\$this->addSQL(\"" . $sql . "\");";
-        }
-        $str .= "\n\n\t}";
-        $str .= "\n\n}";
-        return $str;
-    }
 
-
-    public function initMigrations($pdo)
-    {
-        $query = $pdo->query("SHOW TABLES");
-        $class_name = "Version1";
-        $up = [];
-        $down = [];
-
-        foreach ($query as $table) {
-            $q = $this->pdo->query("SHOW CREATE TABLE " . $table, \PDO::FETCH_NUM);
-            $up[] = $q;
-            $down[] = "DROP " . $table;
-        }
-
-        $str = $this->createMigrationFile("Version1", $up, $down);
-        $this->writeMigration("Version1", $str);
-    }
-
-
-    public function buildMigration()
-    {
-        $class_name = "Version" . date("Ymdhis");
-        $str = $this->createMigrationsFile($class_name);
-        $this->writeMigration($class_name, $str);
-    }
 
     public function syncMigrations($pdo)
     {
@@ -182,7 +96,7 @@ class MigrationCommand extends GenericCommand
             } elseif ($action == "init") {
                 $this->initMigrations($this->getPDO());
             } elseif ($action == "run") {
-                $this->runMigrations($this->getPDO());
+                $this->runMigrations();
             } elseif ($action == "sync") {
                 $this->syncMigrations($this->getPDO());
             }
