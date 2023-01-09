@@ -2,24 +2,11 @@
 
 namespace GenerCodeCmd;
 
-use Symfony\Component\Console\Input\InputInterface;
-use Symfony\Component\Console\Output\OutputInterface;
-
-
-#[AsCommand(name: 'gc:upload')]
 class UploadCommand extends GenericCommand
 {
-    protected static $defaultDescription = 'Uploads the current directory to reset current files';
-    protected static $defaultName = "gc:upload";
+    protected $description = 'Uploads the current directory to reset current files';
+    protected $signature = "gc:upload";
 
-    public function configure(): void
-    {
-        parent::configure();
-        $this
-            // the command help shown when running the command with the "--help" option
-            ->setHelp('Upload directory, overwriting static files such as index and public profile routes')
-        ;
-    }
 
 
     public function zipFiles($zip, $dir)
@@ -54,13 +41,12 @@ class UploadCommand extends GenericCommand
         }
     }
 
-    public function execute(InputInterface $input, OutputInterface $output)
+    public function handle()
     {
-        return $this->executeWrapper($input, $output, function ($input, $output) {
+        try {
             $zip_name = $this->download_dir . "/project.zip";
-            echo "|ip name is " . $zip_name;
-
-            $output->writeln('Zipping files');
+       
+            $this->info('Zipping files');
 
             $zip = new \ZipArchive();
             $zip->open($zip_name, \ZipArchive::CREATE | \ZipArchive::OVERWRITE);
@@ -74,9 +60,16 @@ class UploadCommand extends GenericCommand
 
             // Zip archive will be created only after closing object
             $zip->close();
-            $output->writeln('Uploading directory');
-            $output->writeln($this->http->pushAsset("/asset/projects/src/" . $this->project_id, "src", $zip_name));
+            $this->info('Uploading directory');
+            $this->info($this->http->pushAsset("/asset/projects/src/" . $this->project_id, "src", $zip_name));
             //unlink($zip_name);
-        });
+        } catch(\GenerCodeClient\ApiErrorException $e) {
+            $this->error($e->getMessage());
+            return 1;
+          //  $output->writeln($e->getDetails());
+        } catch (\Exception $e) {
+            $this->error($e->getFile() . ": " . $e->getLine() . "\n" . $e->getMessage());
+            return 2;
+        }
     }
 }

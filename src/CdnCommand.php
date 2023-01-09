@@ -2,29 +2,16 @@
 
 namespace GenerCodeCmd;
 
-use Symfony\Component\Console\Input\InputInterface;
-use Symfony\Component\Console\Output\OutputInterface;
 
-#[AsCommand(name: 'gc:cdn')]
 class CdnCommand extends GenericCommand
 {
-    protected static $defaultDescription = 'Pushes public files to cdn';
-    protected static $defaultName = "gc:cdn";
+    protected static $description = 'Pushes public files to cdn';
+    protected static $signature = "gc:cdn";
    
-
-    public function configure(): void
-    {
-        parent::configure();
-        $this
-            // the command help shown when running the command with the "--help" option
-            ->setHelp('Push public files to cdn and create invalidations')
-        ;
-   }
-
 
 
     public function uploadFiles($dir_path) {
-        $fileHandler = $this->app->make(\GenerCodeOrm\FileHandler::class);
+        $fileHandler = $this->laravel->make(\GenerCodeOrm\FileHandler::class);
         $dir = new \DirectoryIterator($dir_path);
 
         $invalidations = [];
@@ -50,7 +37,7 @@ class CdnCommand extends GenericCommand
         ]);
 
         $cfClient->createInvalidation([
-            'DistributionId' =>$this->app->config->get("hosting.cfdistid"),
+            'DistributionId' =>$this->laravel->config->get("hosting.cfdistid"),
             "InvalidationBatch" => [
                 "CallerReference" => time(),
                 "Paths" => [
@@ -62,16 +49,24 @@ class CdnCommand extends GenericCommand
     }
 
 
-    public function execute(InputInterface $input, OutputInterface $output)
+    public function handle()
     {
-        return $this->executeWrapper($input, $output, function ($input, $output) {
-            $this->app->config->set("filesystems.default", "cdn");
+        try {
+            $this->laravel->config->set("filesystems.default", "cdn");
             $invalidations = $this->uploadFiles($this->download_dir . "/public");
             $invalidations = array_merge($invalidations, $this->uploadFiles($this->download_dir . "/public/dist"));
             $invalidations = array_merge($invalidations, $this->uploadFiles($this->download_dir . "/public/css"));
             $invalidations = array_merge($invalidations, $this->uploadFiles($this->download_dir . "/public/css/fonts"));
             $this->runInvalidations($invalidations);
-        });    
+            $this->info("Files Completed");
+        } catch(\GenerCodeClient\ApiErrorException $e) {
+            $this->error($e->getMessage());
+            return 1;
+          //  $output->writeln($e->getDetails());
+        } catch (\Exception $e) {
+            $this->error($e->getFile() . ": " . $e->getLine() . "\n" . $e->getMessage());
+            return 2;
+        }
     }
 
 }

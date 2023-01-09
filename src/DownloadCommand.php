@@ -2,29 +2,17 @@
 
 namespace GenerCodeCmd;
 
-use Symfony\Component\Console\Input\InputInterface;
-use Symfony\Component\Console\Output\OutputInterface;
-
-
-#[AsCommand(name: 'gc:download')]
 class DownloadCommand extends GenericCommand
 {
-    protected static $defaultDescription = 'Downloads copy of API without repblushing';
-    protected static $defaultName = "gc:download";
+    protected $description = 'Downloads copy of API without repblushing';
+    protected $signature = "gc:download";
 
-    public function configure(): void
+   
+
+
+    public function execute()
     {
-        parent::configure();
-        $this
-            // the command help shown when running the command with the "--help" option
-            ->setHelp('This command downloads the last published version of your files')
-        ;
-    }
-
-
-    public function execute(InputInterface $input, OutputInterface $output)
-    {
-        return $this->executeWrapper($input, $output, function ($input, $output) {
+        try {
             $blob = $this->http->get("/asset/projects/src/" . $this->project_id);
 
             file_put_contents($this->download_dir . "/src.zip", (string) $blob);
@@ -35,8 +23,16 @@ class DownloadCommand extends GenericCommand
             $zip->close();
 
             unlink($this->download_dir . "/src.zip");
+            $this->info("Upload Completed");
 
             //then we need to unzip the file
-        });
+        } catch(\GenerCodeClient\ApiErrorException $e) {
+            $this->error($e->getMessage());
+            return 1;
+          //  $output->writeln($e->getDetails());
+        } catch (\Exception $e) {
+            $this->error($e->getFile() . ": " . $e->getLine() . "\n" . $e->getMessage());
+            return 2;
+        }
     }
 }

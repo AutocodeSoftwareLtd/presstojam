@@ -2,33 +2,10 @@
 
 namespace GenerCodeCmd;
 
-use Symfony\Component\Console\Input\InputInterface;
-use Symfony\Component\Console\Output\OutputInterface;
-
-use Symfony\Component\Console\Input\InputArgument;
-use Symfony\Component\Console\Input\InputOption;
-
-
-#[AsCommand(name: 'gc:dictionary')]
 class DictionaryCommand extends GenericCommand
 {
-    protected static $defaultDescription = 'Creates or downloads copy of the dictionary for a given language';
-    protected static $defaultName = "gc:dictionary";
-
-
-
-    public function configure(): void
-    {
-        parent::configure();
-        $this
-            // the command help shown when running the command with the "--help" option
-            ->setHelp('Create / download dictionary')
-        ;
-
-        $this
-            // ...
-            ->addArgument('lang', InputArgument::REQUIRED, 'Which language do you want to work with?');
-    }
+    protected static $description = 'Creates or downloads copy of the dictionary for a given language';
+    protected static $signature = "gc:dictionary {lang : Which language do you want to work with?}";
 
 
 
@@ -56,10 +33,10 @@ class DictionaryCommand extends GenericCommand
 
 
 
-    public function execute(InputInterface $input, OutputInterface $output)
+    public function handle()
     {
-        return $this->executeWrapper($input, $output, function ($input, $output) {
-            $lang = $input->getArgument("lang");
+        try {
+            $lang = $this->argument("lang");
             $obj = $this->http->get("/data/dictionary-templates", ["--parent"=>$this->project_id, "lang"=>$lang, "__limit"=>1]);
             if ($obj) {
                 return;
@@ -71,6 +48,14 @@ class DictionaryCommand extends GenericCommand
             if ($this->processQueue($res['--dispatch-id'])) {
                 $this->download($lang, $res["--id"]);
             }
-        });
+            $this->info("Language Created");
+        } catch(\GenerCodeClient\ApiErrorException $e) {
+            $this->error($e->getMessage());
+            return 1;
+          //  $output->writeln($e->getDetails());
+        } catch (\Exception $e) {
+            $this->error($e->getFile() . ": " . $e->getLine() . "\n" . $e->getMessage());
+            return 2;
+        }
     }
 }

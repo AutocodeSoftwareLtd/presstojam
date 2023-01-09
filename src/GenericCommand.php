@@ -4,22 +4,15 @@
 
 namespace GenerCodeCmd;
 
-use Symfony\Component\Console\Attribute\AsCommand;
-use Symfony\Component\Console\Command\Command;
-use Symfony\Component\Console\Input\InputInterface;
-use Symfony\Component\Console\Output\OutputInterface;
-
-use Symfony\Component\Console\Question\Question;
-use Symfony\Component\Console\Question\ConfirmationQuestion;
-use Symfony\Component\Console\Question\ChoiceQuestion;
-use Symfony\Component\Console\Input\InputArgument;
-use Symfony\Component\Console\Input\InputOption;
-
+use Illuminate\Console\Command;
 use \Illuminate\Container\Container;
 
 class GenericCommand extends Command
 {
-    protected $app;
+
+    protected $signature;
+    protected $description;
+
     protected $http;
     private $username;
     private $password;
@@ -27,17 +20,16 @@ class GenericCommand extends Command
     protected $download_dir;
     
 
-    public function __construct(Container $app)
+    public function __construct()
     {
         parent::__construct();
-        $this->app = $app;
         $this->http = new \GenerCodeClient\HttpClient("https://api.presstojam.com");
         //set token as session
 
-        $this->username = $this->app->config->get("cmd.username");
-        $this->password = $this->app->config->get("cmd.password");
-        $this->project_id = $this->app->config->get("cmd.project_id");
-        $this->download_dir = $this->app->config->get("cmd.download_dir");
+        $this->username = $this->laravel->config->get("cmd.username");
+        $this->password = $this->laravel->config->get("cmd.password");
+        $this->project_id = $this->laravel->config->get("cmd.project_id");
+        $this->download_dir = $this->laravel->config->get("cmd.download_dir");
     }
 
    
@@ -48,21 +40,15 @@ class GenericCommand extends Command
     }
 
 
-    public function login(InputInterface $input, OutputInterface $output)
+    public function login()
     {
 
-        $helper = $this->getHelper('question');
-
         if (!$this->username) {              
-            $question = new Question('Please enter your username: ', '');
-            $this->username = $helper->ask($input, $output, $question);
+            $this->username = $this->ask('Please enter your username:');
         }
 
         if (!$this->password) {
-            $question = new Question('Please enter your password: ');
-            $question->setHidden(true);
-            $question->setHiddenFallback(false);
-            $this->password = $helper->ask($input, $output, $question);
+            $this->password = $this->secret('Please enter your password: ');
         }
 
 
@@ -97,10 +83,7 @@ class GenericCommand extends Command
         }
 
 
-
-
         if (!$this->project_id) {
-            $helper = $this->getHelper('question');
             $projects = $this->http->get("/data/projects", ["__fields"=>["--id", "domain"]]);
 
             $arr = [];
@@ -109,24 +92,13 @@ class GenericCommand extends Command
             }
 
 
-
-            $question = new ChoiceQuestion(
-                'Please select your project',
-                // choices can also be PHP objects that implement __toString() method
-                array_values($arr)
-            );
-
-            $question->setErrorMessage('Project %s is invalid.');
-
-            $project = $helper->ask($input, $output, $question);
+            $project = $this->choice('Please select your project', array_values($arr));
             $this->project_id = array_search($project, $arr);
         }
 
 
         if (!$this->download_dir) {
-            $helper = $this->getHelper('question');
-            $question = new Question('Please enter your download directory: ', '');
-            $dir = $helper->ask($input, $output, $question);
+            $dir = $this->ask('Please enter your download directory: ');
             if (substr($dir, 0, 2) == "./") {
                 $this->download_dir = $_ENV['root'] . "/" . substr($dir, 2);
             } else {
@@ -150,19 +122,18 @@ class GenericCommand extends Command
         }
     }
 
-    public function executeWrapper(InputInterface $input, OutputInterface $output, $cb)
+    public function executeWrapper($cb)
     {
         try {
             $cb($input, $output);
-            $output->writeln('Process Complete');
+            $this->info('Process Complete');
             return 0;
         } catch(\GenerCodeClient\ApiErrorException $e) {
-            $output->writeln($e->getMessage());
-            $e->getDetails();
+            $this->error($e->getMessage());
             return 1;
           //  $output->writeln($e->getDetails());
         } catch (\Exception $e) {
-            $output->writeln($e->getFile() . ": " . $e->getLine() . "\n" . $e->getMessage());
+            $this->error($e->getFile() . ": " . $e->getLine() . "\n" . $e->getMessage());
             return 2;
         }
     }
