@@ -10,7 +10,7 @@ class DownloadCommand extends GenericCommand
    
 
 
-    public function execute()
+    public function handle()
     {
         try {
             $blob = $this->http->get("/asset/projects/src/" . $this->project_id);
