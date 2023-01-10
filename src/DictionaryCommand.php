@@ -5,7 +5,7 @@ namespace GenerCodeCmd;
 class DictionaryCommand extends GenericCommand
 {
     protected $description = 'Creates or downloads copy of the dictionary for a given language';
-    protected $user = "gc:dictionary {lang : Which language do you want to work with?}";
+    protected $signature = "gc:dictionary {lang : Which language do you want to work with?}";
 
 
 
