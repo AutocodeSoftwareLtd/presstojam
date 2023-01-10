@@ -17,16 +17,16 @@ class GenericCommand extends Command
     protected $download_dir;
     
 
-    public function __construct($config)
+    public function __construct()
     {
         parent::__construct();
         $this->http = new \GenerCodeClient\HttpClient("https://api.presstojam.com");
         //set token as session
 
-        $this->username = $config->get("cmd.username");
-        $this->password = $config->get("cmd.password");
-        $this->project_id = $config->get("cmd.project_id");
-        $this->download_dir = $config->get("cmd.download_dir");
+        $this->username = config("cmd.username");
+        $this->password = config("cmd.password");
+        $this->project_id = config("cmd.project_id");
+        $this->download_dir = config("cmd.download_dir");
     }
 
    
