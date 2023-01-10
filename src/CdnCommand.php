@@ -5,8 +5,8 @@ namespace GenerCodeCmd;
 
 class CdnCommand extends GenericCommand
 {
-    protected static $description = 'Pushes public files to cdn';
-    protected static $signature = "gc:cdn";
+    protected $description = 'Pushes public files to cdn';
+    protected $signature = "gc:cdn";
    
 
 
