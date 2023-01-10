@@ -10,9 +10,6 @@ use \Illuminate\Container\Container;
 class GenericCommand extends Command
 {
 
-    protected $signature;
-    protected $description;
-
     protected $http;
     private $username;
     private $password;
@@ -20,16 +17,16 @@ class GenericCommand extends Command
     protected $download_dir;
     
 
-    public function __construct()
+    public function __construct($config)
     {
         parent::__construct();
         $this->http = new \GenerCodeClient\HttpClient("https://api.presstojam.com");
         //set token as session
 
-        $this->username = $this->laravel->config->get("cmd.username");
-        $this->password = $this->laravel->config->get("cmd.password");
-        $this->project_id = $this->laravel->config->get("cmd.project_id");
-        $this->download_dir = $this->laravel->config->get("cmd.download_dir");
+        $this->username = $config->get("cmd.username");
+        $this->password = $config->get("cmd.password");
+        $this->project_id = $config->get("cmd.project_id");
+        $this->download_dir = $config->get("cmd.download_dir");
     }
 
    
@@ -67,7 +64,7 @@ class GenericCommand extends Command
         $this->http->post("/user/logout");
     }
 
-    public function interact(InputInterface $input, OutputInterface $output)
+    public function checkStatus()
     {
         $name = $this->checkUser();
         if ($name != "public" and $name != "accounts") {
@@ -78,7 +75,7 @@ class GenericCommand extends Command
 
         if ($name == "public") {
                 
-            $this->login($input, $output);
+            $this->login();
             
         }
 

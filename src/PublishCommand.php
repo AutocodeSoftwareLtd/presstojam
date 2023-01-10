@@ -11,14 +11,15 @@ use Symfony\Component\Console\Output\OutputInterface;
 
 class PublishCommand extends GenericCommand
 {
-    
-    protected $description = 'Writes latest version of files required for the API';
+
     protected $signature = "gc:publish";
+    protected $description = 'Writes latest version of files required for the API';
 
 
     public function handle()
     {
         try {
+            $this->checkStatus();
             $response = $this->http->post("/publish", ["--id"=>$this->project_id]);
             $dispatch_id = $response['--dispatchid'];
             sleep(10);
