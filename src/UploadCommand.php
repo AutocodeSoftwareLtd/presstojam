@@ -58,9 +58,7 @@ class UploadCommand extends GenericCommand
             $this->zipFiles($zip, "tests");
             $this->zipFiles($zip, "meta");
             $this->zipFiles($zip, "app");
-            $this->zipFiles($zip, "config");
-            $this->zipFiles($zip, "bootstrap");
-
+       
             // Zip archive will be created only after closing object
             $zip->close();
             $this->info('Uploading directory');
