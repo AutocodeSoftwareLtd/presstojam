@@ -11,7 +11,7 @@ class CdnCommand extends GenericCommand
 
 
     public function uploadFiles($dir_path) {
-        $fileHandler = $this->laravel->make(\GenerCodeOrm\FileHandler::class);
+        $fileHandler = app()->make(\GenerCodeOrm\FileHandler::class);
         $dir = new \DirectoryIterator($dir_path);
 
         $invalidations = [];
@@ -37,7 +37,7 @@ class CdnCommand extends GenericCommand
         ]);
 
         $cfClient->createInvalidation([
-            'DistributionId' =>$this->laravel->config->get("hosting.cfdistid"),
+            'DistributionId' =>config("hosting.cfdistid"),
             "InvalidationBatch" => [
                 "CallerReference" => time(),
                 "Paths" => [
@@ -52,7 +52,8 @@ class CdnCommand extends GenericCommand
     public function handle()
     {
         try {
-            $this->laravel->config->set("filesystems.default", "cdn");
+            $this->login();
+            config("filesystems.default", "cdn");
             $invalidations = $this->uploadFiles($this->download_dir . "/public");
             $invalidations = array_merge($invalidations, $this->uploadFiles($this->download_dir . "/public/dist"));
             $invalidations = array_merge($invalidations, $this->uploadFiles($this->download_dir . "/public/css"));

@@ -18,7 +18,7 @@ class DictionaryCommand extends GenericCommand
 
     public function createLanguage($lang)
     {
-        $res = $this->client->post("/data/dictionary-templates", ["--parent"=>  $this->project_id, "language"=>$lang, "process"=>true]);
+        $res = $this->http->post("/data/dictionary-templates", ["--parent"=>  $this->project_id, "language"=>$lang, "process"=>true]);
         return $res;
     }
 
@@ -36,6 +36,7 @@ class DictionaryCommand extends GenericCommand
     public function handle()
     {
         try {
+            $this->login();
             $lang = $this->argument("lang");
             $obj = $this->http->get("/data/dictionary-templates", ["--parent"=>$this->project_id, "lang"=>$lang, "__limit"=>1]);
             if ($obj) {
