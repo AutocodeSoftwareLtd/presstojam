@@ -110,7 +110,7 @@ class GenericCommand extends Command
         while (true) {
             $res = $this->http->get("/data/queue/active", ["--id"=>$dispatch_id, "__fields"=>["progress"]]);
             var_dump($res);
-            if ($res['progress'] == 'PROCESSED') {
+            if (!$res) {
                 return true;
             } elseif ($res['progress'] == "FAILED") {
                 return false;
