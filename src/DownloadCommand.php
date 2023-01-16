@@ -7,7 +7,25 @@ class DownloadCommand extends GenericCommand
     protected $description = 'Downloads copy of API without repblushing';
     protected $signature = "gc:download";
 
+    function isExcluded($file, $excludes) {
+        foreach($excludes as $exclude) {
+            if (strpos($file, $exclude) !== false) return true;
+        }
+        return false;
+    }
+
    
+    function extractFiles($zip, array $excludes = []) {
+        $files = [];
+        for ( $i=0; $i < $zip->numFiles; ++$i ) {
+            $entry = $zip->getNameIndex($i);
+
+            if (!$this->isExcluded($entry, $excludes)) {
+                $files[] = $zip->getNameIndex($i);
+            }
+        }
+        $zip->extractTo($this->download_dir, $files);
+    }
 
 
     public function handle()
@@ -20,7 +38,7 @@ class DownloadCommand extends GenericCommand
 
             $zip = new \ZipArchive();
             $zip->open($this->download_dir . "/src.zip");
-            $zip->extractTo($this->download_dir);
+            $this->extractFiles($zip, config("cmd.download_excludes", []));
             $zip->close();
 
             unlink($this->download_dir . "/src.zip");
