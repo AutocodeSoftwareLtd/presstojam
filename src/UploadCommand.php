@@ -53,7 +53,6 @@ class UploadCommand extends GenericCommand
             $zip->open($zip_name, \ZipArchive::CREATE | \ZipArchive::OVERWRITE);
 
             $this->zipFiles($zip, "api");
-            $this->zipFiles($zip, "migrations");
             $this->zipFiles($zip, "public");
             $this->zipFiles($zip, "tests");
             $this->zipFiles($zip, "meta");
