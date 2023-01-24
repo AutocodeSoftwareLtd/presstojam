@@ -11,7 +11,7 @@ class CdnCommand extends GenericCommand
 
 
     public function uploadFiles($dir_path) {
-        $fileHandler = app()->make(\GenerCodeOrm\FileHandler::class);
+        $fileHandler = new \GenerCodeOrm\FileHandler(true);
         $dir = new \DirectoryIterator($dir_path);
 
         $invalidations = [];
