@@ -48,12 +48,22 @@ class CdnCommand extends GenericCommand
         ]);
     }
 
+    public function runWebpack() {
+        $cmd = "webpack --config /home/ec2-user/manager/webpack.config.js";
+            $cmd .= " --env dir=\"" . $this->download_dir . "/public/src\"";
+            $cmd .= " --env modules=\"/home/ec2-user/manager\"";
+            $cmd .= " --env output=\"" . $this->download_dir . "/public/dist\"";
+            //echo "\nComamnd is " . $cmd;
+            //echo 
+            shell_exec($cmd);
+    }
 
     public function handle()
     {
         try {
             $this->login();
             config("filesystems.default", "cdn");
+            $this->runWebpack();
             $invalidations = $this->uploadFiles($this->download_dir . "/public");
             $invalidations = array_merge($invalidations, $this->uploadFiles($this->download_dir . "/public/dist"));
             $invalidations = array_merge($invalidations, $this->uploadFiles($this->download_dir . "/public/css"));
