@@ -49,13 +49,13 @@ class CdnCommand extends GenericCommand
     }
 
     public function runWebpack() {
+        $module_dir = config("cmd.node_modules");
         $cmd = "webpack --config /home/ec2-user/manager/webpack.config.js";
             $cmd .= " --env dir=\"" . $this->download_dir . "/public/src\"";
-            $cmd .= " --env modules=\"/home/ec2-user/manager\"";
+            $cmd .= " --env modules=\"" . $module_dir . "\"";
             $cmd .= " --env output=\"" . $this->download_dir . "/public/dist\"";
-            //echo "\nComamnd is " . $cmd;
-            //echo 
-            shell_exec($cmd);
+            echo "\nComamnd is " . $cmd;
+            echo shell_exec($cmd);
     }
 
     public function handle()
