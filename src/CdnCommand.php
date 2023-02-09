@@ -67,6 +67,7 @@ class CdnCommand extends GenericCommand
             $invalidations = $this->uploadFiles($this->download_dir . "/public");
             $invalidations = array_merge($invalidations, $this->uploadFiles($this->download_dir . "/public/dist"));
             $invalidations = array_merge($invalidations, $this->uploadFiles($this->download_dir . "/public/css"));
+            $invalidations = array_merge($invalidations, $this->uploadFiles($this->download_dir . "/public/assets"));
             $invalidations = array_merge($invalidations, $this->uploadFiles($this->download_dir . "/public/css/fonts"));
             $this->runInvalidations($invalidations);
             $this->info("Files Completed");
