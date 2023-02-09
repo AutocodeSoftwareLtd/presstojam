@@ -108,11 +108,10 @@ class GenericCommand extends Command
     public function processQueue($dispatch_id)
     {
         while (true) {
-            $res = $this->http->get("/data/queue/active", ["--id"=>$dispatch_id, "__fields"=>["progress"]]);
-            var_dump($res);
-            if (!$res) {
+            $res = $this->http->get("/dispatch/status/" . $dispatch_id);
+            if (!$res OR $res=="success") {
                 return true;
-            } elseif ($res['progress'] == "FAILED") {
+            } elseif ($res == "FAILED") {
                 return false;
             }
             sleep(2);
