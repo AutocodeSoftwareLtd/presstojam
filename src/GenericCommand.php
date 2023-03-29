@@ -20,7 +20,7 @@ class GenericCommand extends Command
     public function __construct()
     {
         parent::__construct();
-        $this->http = new \GenerCodeClient\HttpClient("https://api.presstojam.com");
+        $this->http = new \GenerCodeClient\HttpClient("https://presstojam.com");
         //set token as session
 
         $this->username = config("cmd.username");
@@ -32,8 +32,8 @@ class GenericCommand extends Command
    
     public function checkUser()
     {
-        $res = $this->http->get("/user/check-user");
-        return $res["name"];
+        $res = $this->http->get("/api/user");
+        return $res["type"];
     }
 
 
@@ -49,7 +49,7 @@ class GenericCommand extends Command
         }
 
 
-        $res = $this->http->post("/user/login/accounts", [
+        $res = $this->http->post("/api/user/login/accounts", [
             "email"=>$this->username,
             "password"=>$this->password
         ]);
@@ -61,7 +61,7 @@ class GenericCommand extends Command
 
     public function logout()
     {
-        $this->http->post("/user/logout");
+        $this->http->post("/api/user/logout");
     }
 
     public function checkStatus()
@@ -81,7 +81,7 @@ class GenericCommand extends Command
 
 
         if (!$this->project_id) {
-            $projects = $this->http->get("/data/projects", ["__fields"=>["--id", "domain"]]);
+            $projects = $this->http->get("/api/projects", ["__fields"=>["--id", "domain"]]);
 
             $arr = [];
             foreach ($projects as $row) {
@@ -108,7 +108,7 @@ class GenericCommand extends Command
     public function processQueue($dispatch_id)
     {
         while (true) {
-            $res = $this->http->get("/dispatch/status/" . $dispatch_id);
+            $res = $this->http->get("/api/projects/status/" . $dispatch_id);
             if (!$res OR $res=="success") {
                 return true;
             } elseif ($res == "FAILED") {

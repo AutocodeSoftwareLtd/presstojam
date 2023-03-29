@@ -32,7 +32,7 @@ class DownloadCommand extends GenericCommand
     {
         try {
             $this->login();
-            $blob = $this->http->get("/asset/projects/src/" . $this->project_id);
+            $blob = $this->http->get("/api/projects/src/" . $this->project_id);
 
             file_put_contents($this->download_dir . "/src.zip", (string) $blob);
 
